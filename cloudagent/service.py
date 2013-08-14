@@ -19,6 +19,7 @@ Agent configuration, service management and execution class
 """
 
 import base64
+import json
 import platform
 
 import serial
@@ -38,6 +39,7 @@ class AgentService(object):
             self.driver = debian.DebianDriver()
 
         self.serial = serial.Serial(2)
+        self.mdata_serial = serial.Serial(1)
 
     def run(self):
         while True:
@@ -59,7 +61,10 @@ class AgentService(object):
             # If set_admin_password then decrypt argument
             if command == 'set_admin_password':
                 args[0] = self.driver.dh.decrypt(args[0])
-            print command, args
+
+            # If reset network, then get all network_info
+            if command == 'reset_network':
+                args[0] = json.loads(args[0])
 
             driver_command = getattr(self.driver, command)
             ret = driver_command(*args)

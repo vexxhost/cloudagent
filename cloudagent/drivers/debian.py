@@ -25,4 +25,4 @@ class DebianDriver(linux.LinuxDriver):
     """Debian-based operating system driver"""
 
     def reset_network(self, network_info):
-        print "blah"
+        print network_info
