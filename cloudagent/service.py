@@ -23,6 +23,7 @@ import platform
 
 import serial
 
+from cloudagent import __version__
 from cloudagent.drivers import debian
 
 
@@ -39,6 +40,8 @@ class AgentService(object):
         self.serial = serial.Serial(2)
 
     def run(self):
+        self.serial.write('cloudagent-%s\n' % __version__)
+
         while True:
             b64_args = self.serial.readline().strip().split()
             args = []
