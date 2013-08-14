@@ -40,8 +40,6 @@ class AgentService(object):
         self.serial = serial.Serial(2)
 
     def run(self):
-        self.serial.write('cloudagent-%s\n' % __version__)
-
         while True:
             b64_args = self.serial.readline().strip().split()
             args = []
@@ -58,12 +56,24 @@ class AgentService(object):
 
     def run_command(self, command, args):
         try:
+            # If set_admin_password then decrypt argument
+            if command == 'set_admin_password':
+                args[0] = self.driver.dh.decrypt(args[0])
+            print command, args
+
             driver_command = getattr(self.driver, command)
-            driver_command(*args)
-            self.serial.write("ok\n")
+            ret = driver_command(*args)
+
+            print 'ret:', ret
+
+            if ret:
+                self.serial.write("%s\n" % ret)
+            else:
+                self.serial.write("ok\n")
         except AttributeError, e:
             self.serial.write('invalid-cmd\n')
         except TypeError, e:
             self.serial.write('missing-args\n')
         except Exception, e:
-            self.serial.write('%s' % e)
+            print e
+            self.serial.write('%s\n' % e)
