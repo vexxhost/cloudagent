@@ -41,6 +41,9 @@ class AgentService(object):
         self.serial = serial.Serial(2)
         self.mdata_serial = serial.Serial(1)
 
+    def install(self):
+        self.driver.install()
+
     def run(self):
         while True:
             b64_args = self.serial.readline().strip().split()
@@ -80,5 +83,4 @@ class AgentService(object):
         except TypeError, e:
             self.serial.write('missing-args\n')
         except Exception, e:
-            print e
             self.serial.write('%s\n' % e)

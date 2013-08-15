@@ -26,6 +26,7 @@ import subprocess
 import time
 
 from cloudagent.drivers import base
+from cloudagent import templates
 from cloudagent import utils
 
 class LinuxDriver(base.BaseDriver):
@@ -67,4 +68,44 @@ class LinuxDriver(base.BaseDriver):
             nic_map[nic] = utils.get_mac_addr(nic)
 
         return nic_map
+
+    def reset_hostname(self, network_info):
+        """Reset the hostname of this instance"""
+        hostname = network_info['hostname']
+        ret = subprocess.call(('hostname', hostname))
+
+        context = {'ips': [], 'hostname': hostname}
+        for key, value in network_info.iteritems():
+            if 'vif-' not in key: continue
+            context['ips'] += [addr['ip'] for addr in value['ips']]
+        hosts_file = templates.HOSTS.render(context)
+
+        # Write the hosts file
+        self.inject_file('/etc/hosts', hosts_file)
+
+    def _generate_host_records(self, ips, hostname):
+        host_lines = []
+        for ip in ips:
+            host_lines += [templates.HOSTS_FILE_LINE % locals()]
+        return host_lines
+
+    def reset_resolvers(self, network_info):
+        """Reset the resolvers of this instance"""
+        # Generate resolver records
+        resolv_records = []
+        for key, value in network_info.iteritems():
+            if 'vif-' not in key: continue
+            resolv_records += self._generate_resolv_records(value['dns'])
+
+        # Generate the resolvers file
+        resolv_file = "\n".join(resolv_records) + "\n"
+
+        # Write the resolvers file
+        self.inject_file('/etc/resolv.conf', resolv_file)
+
+    def _generate_resolv_records(self, dns_records):
+        resolv_lines = []
+        for dns in dns_records:
+            resolv_lines += ['nameserver %s' % dns]
+        return resolv_lines
 

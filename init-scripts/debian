@@ -1,0 +1,91 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          cloudagent
+# Required-Start:    $network
+# Required-Stop:     $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: cloudagent
+# Description:       OpenStack Cloud Server Agent
+### END INIT INFO
+
+set -e
+
+# /etc/init.d/cloudagent
+
+DAEMON=/usr/local/bin/cloudagent
+PIDFILE=/var/run/cloudagent.pid
+
+test -x $DAEMON || exit 0
+
+. /lib/lsb/init-functions
+
+export PATH="${PATH:+$PATH:}/usr/sbin:/sbin"
+
+cloudagent_start() {
+  if start-stop-daemon --start --quiet --background \
+      --pidfile $PIDFILE --make-pidfile --exec $DAEMON
+  then
+    rc=0
+    sleep 1
+    if ! kill -0 $(cat $PIDFILE) >/dev/null 2>&1; then
+      log_failure_msg "cloudagent daemon failed to start"
+      rc=1
+    fi
+  else
+    rc=1
+  fi
+  if [ $rc -eq 0 ]; then
+    log_end_msg 0
+  else
+    log_end_msg 1
+    rm -f $PIDFILE
+  fi
+} # cloudagent_start
+
+
+case "$1" in
+  start)
+    log_daemon_msg "Starting cloudagent daemon" "cloudagent"
+
+    if [ -s $PIDFILE ] && kill -0 $(cat $PIDFILE) >/dev/null 2>&1; then
+      log_progress_msg "apparently already running"
+      log_end_msg 0
+      exit 0
+    fi
+
+    cloudagent_start
+  ;;
+  stop)
+    log_daemon_msg "Stopping cloudagent daemon" "cloudagent"
+    start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+    log_end_msg $?
+    rm -f $PIDFILE
+  ;;
+
+  restart)
+  set +e
+    log_daemon_msg "Restarting cloudagent daemon" "cloudagent"
+
+    if [ -s $PIDFILE ] && kill -0 $(cat $PIDFILE) >/dev/null 2>&1; then
+      start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE || true
+      sleep 1
+    else
+      log_warning_msg "cloudagent daemon not running, attempting to start."
+      rm -f $PIDFILE
+    fi
+
+    cloudagent_start
+  ;;
+
+  status)
+  status_of_proc -p $PIDFILE "$DAEMON" cloudagent
+  exit $? # notreached due to set -e
+  ;;
+  *)
+  echo "Usage: /etc/init.d/cloudagent {start|stop|restart|status}"
+  exit 1
+esac
+
+exit 0

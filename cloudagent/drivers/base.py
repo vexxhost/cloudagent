@@ -24,6 +24,10 @@ from cloudagent import utils
 class BaseDriver(object):
     """Base class for compute drivers."""
 
+    def install(self):
+        """Install scripts to ensure running on boot"""
+        raise NotImplementedError()
+
     def get_version(self):
         """Get the current agent version"""
         return __version__
@@ -50,6 +54,25 @@ class BaseDriver(object):
         """Get all NICs and their MAC addreses on this instance"""
         raise NotImplementedError()
 
+    def reset_hostname(self, network_info):
+        """Reset the hostname of this instance"""
+        raise NotImplementedError()
+
+    def reset_resolvers(self, network_info):
+        """Reset the resolvers of this instance"""
+        raise NotImplementedError()
+
+    def reset_nics(self, network_info):
+        """Reset the resolvers of this instance"""
+        raise NotImplementedError()
+
+    def reload_network(self):
+        """Reload the network configuration on the instance"""
+        raise NotImplementedError()
+
     def reset_network(self, network_info):
         """Update and re-apply new network configuration"""
-        raise NotImplementedError()
+        self.reset_hostname(network_info)
+        self.reset_resolvers(network_info)
+        self.reset_nics(network_info)
+        self.reload_network()
