@@ -38,13 +38,13 @@ class AgentService(object):
         if distro == 'debian':
             self.driver = debian.DebianDriver()
 
-        self.serial = serial.Serial(2)
-        self.mdata_serial = serial.Serial(1)
-
     def install(self):
         self.driver.install()
 
     def run(self):
+        self.serial = serial.Serial(2)
+        self.mdata_serial = serial.Serial(1)
+
         while True:
             b64_args = self.serial.readline().strip().split()
             args = []
