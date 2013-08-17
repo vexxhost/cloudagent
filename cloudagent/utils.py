@@ -148,7 +148,8 @@ class SimpleDH(object):
                'pass:%s' % self._shared, '-nosalt']
         if decrypt:
             cmd.append('-d')
-        out, err = execute(*cmd, process_input=text)
+        cmd = " ".join(cmd)
+        out, err = execute(cmd, process_input=text)
         if err:
             raise RuntimeError(_('OpenSSL error: %s') % err)
         return out
