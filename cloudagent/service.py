@@ -19,7 +19,6 @@ Agent configuration, service management and execution class
 """
 
 import base64
-import json
 import platform
 
 import serial
