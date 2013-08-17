@@ -32,4 +32,9 @@ from cloudagent import service
 
 if __name__ == '__main__':
     agent = service.AgentService()
-    agent.start()
+
+    if '-f' in sys.argv:
+        agent.run()
+    else:
+        agent.start()
+

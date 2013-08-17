@@ -39,7 +39,7 @@ class RedhatDriver(linux.LinuxDriver):
 
     def reset_hostname(self, network_info):
         """Reset the hostname of this instance"""
-        super(DebianDriver, self).reset_hostname(network_info)
+        super(RedhatDriver, self).reset_hostname(network_info)
 
         # Apply Redhat-specific changes
         hostname = network_info['hostname']

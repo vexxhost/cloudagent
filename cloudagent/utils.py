@@ -305,7 +305,7 @@ class SimpleDH(object):
         if decrypt:
             cmd.append('-d')
         cmd = " ".join(cmd)
-        out, err = execute(cmd, process_input=text)
+        out, err = execute(cmd, process_input=text, shell=True)
         if err:
             raise RuntimeError(_('OpenSSL error: %s') % err)
         return out
