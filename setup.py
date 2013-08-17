@@ -31,7 +31,7 @@ setuptools.setup(
     description='OpenStack Cloud Server Agent',
     data_files=[('init-scripts', ['init-scripts/debian'])],
     install_requires=[
-        "jinja2",
+        "Jinja2>=2.3,<2.7",
         "pyserial",
     ],
 )
