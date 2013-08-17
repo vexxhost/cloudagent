@@ -19,13 +19,13 @@ Agent configuration, service management and execution class
 """
 
 import base64
-import platform
 
 import serial
 import simplejson as json
 
 from cloudagent import __version__
 from cloudagent.drivers import debian
+from cloudagent import utils
 
 
 class AgentService(object):
@@ -33,7 +33,7 @@ class AgentService(object):
 
     def __init__(self):
         """Load the configuration and the proper driver"""
-        distro, version, codename = platform.linux_distribution()
+        distro, version, codename = utils.linux_distribution()
 
         if distro == 'debian' or distro == 'Ubuntu':
             self.driver = debian.DebianDriver()
