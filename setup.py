@@ -34,5 +34,5 @@ setuptools.setup(
         "Jinja2==2.6",
         "pyserial",
     ],
-    dependency_links = ['https://github.com/mitsuhiko/jinja2/archive/2.6.tar.gz#egg=Jinja2-2.6'],
+    dependency_links = ['http://pypi.python.org/packages/source/J/Jinja2/Jinja2-2.6.tar.gz#egg=Jinja2-2.6'],
 )
