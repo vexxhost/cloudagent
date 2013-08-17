@@ -35,7 +35,7 @@ class AgentService(object):
         """Load the configuration and the proper driver"""
         distro, version, codename = platform.linux_distribution()
 
-        if distro == 'debian':
+        if distro == 'debian' or distro == 'ubuntu':
             self.driver = debian.DebianDriver()
 
     def install(self):
