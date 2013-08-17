@@ -26,6 +26,7 @@ import simplejson as json
 from cloudagent import __version__
 from cloudagent import daemon
 from cloudagent.drivers import debian
+from cloudagent.drivers import redhat
 from cloudagent import utils
 
 
@@ -41,6 +42,8 @@ class AgentService(daemon.Daemon):
 
         if distro == 'debian' or distro == 'Ubuntu':
             self.driver = debian.DebianDriver()
+        elif distro == 'CentOS':
+            self.driver = redhat.RedhatDriver()
 
     def install(self):
         self.driver.install()

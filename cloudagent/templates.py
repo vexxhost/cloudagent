@@ -43,3 +43,9 @@ iface {{ dev.name }}:{{ loop.index }} inet static
     netmask {{ ip.netmask }}
 {% endfor %}
 {% endfor %}""")
+
+
+REDHAT_SYSCONFIG = jinja2.Template("""NETWORKING=yes
+NETWORKING_IPV6=yes
+HOSTNAME={{ hostname }}
+""")

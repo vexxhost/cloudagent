@@ -29,7 +29,7 @@ setuptools.setup(
     url='http://pypi.python.org/pypi/CloudAgent/',
     license='LICENSE',
     description='OpenStack Cloud Server Agent',
-    data_files=[('init-scripts', ['init-scripts/debian'])],
+    data_files=[('init-scripts', ['init-scripts/debian', 'init-scripts/redhat'])],
     install_requires=[
         "Jinja2==2.6",
         "pyserial",
