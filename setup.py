@@ -33,6 +33,8 @@ setuptools.setup(
     install_requires=[
         "Jinja2==2.6",
         "pyserial",
+        "simplejson==2.1.0",
     ],
-    dependency_links = ['http://pypi.python.org/packages/source/J/Jinja2/Jinja2-2.6.tar.gz#egg=Jinja2-2.6'],
+    dependency_links = ['http://pypi.python.org/packages/source/J/Jinja2/Jinja2-2.6.tar.gz#egg=Jinja2-2.6',
+                        'https://pypi.python.org/packages/source/s/simplejson/simplejson-2.1.0.tar.gz#egg=simplejson-2.1.0'],
 )

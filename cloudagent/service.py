@@ -23,6 +23,7 @@ import json
 import platform
 
 import serial
+import simplejson as json
 
 from cloudagent import __version__
 from cloudagent.drivers import debian
