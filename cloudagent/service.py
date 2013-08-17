@@ -24,15 +24,18 @@ import serial
 import simplejson as json
 
 from cloudagent import __version__
+from cloudagent import daemon
 from cloudagent.drivers import debian
 from cloudagent import utils
 
 
-class AgentService(object):
+class AgentService(daemon.Daemon):
     """Agent serial service"""
 
     def __init__(self):
         """Load the configuration and the proper driver"""
+        super(AgentService, self).__init__(pidfile='/var/run/cloudagent.pid')
+
         distro, version, codename = utils.linux_distribution()
 
         if distro == 'debian' or distro == 'Ubuntu':

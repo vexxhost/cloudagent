@@ -24,8 +24,8 @@ test -x $DAEMON || exit 0
 export PATH="${PATH:+$PATH:}/usr/sbin:/sbin"
 
 cloudagent_start() {
-  if start-stop-daemon --start --quiet --background \
-      --pidfile $PIDFILE --make-pidfile --exec $DAEMON
+  if start-stop-daemon --start --quiet \
+      --pidfile $PIDFILE --exec $DAEMON
   then
     rc=0
     sleep 1

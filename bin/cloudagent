@@ -32,4 +32,4 @@ from cloudagent import service
 
 if __name__ == '__main__':
     agent = service.AgentService()
-    agent.run()
+    agent.start()
