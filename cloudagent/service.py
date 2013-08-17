@@ -34,7 +34,8 @@ class AgentService(daemon.Daemon):
 
     def __init__(self):
         """Load the configuration and the proper driver"""
-        super(AgentService, self).__init__(pidfile='/var/run/cloudagent.pid')
+        super(AgentService, self).__init__(pidfile='/var/run/cloudagent.pid',
+            verbose=0)
 
         distro, version, codename = utils.linux_distribution()
 
