@@ -109,3 +109,34 @@ class LinuxDriver(base.BaseDriver):
             resolv_lines += ['nameserver %s' % dns]
         return resolv_lines
 
+    def _get_devices(self, network_info):
+        """Get the device information"""
+        nics = self.get_nics()
+        mac_dev = dict([[v,k] for k,v in nics.items()])
+
+        devices = []
+        for key, value in network_info.iteritems():
+            if 'vif-' not in key: continue
+            if len(value['ips']) == 0: continue
+
+            primary_ip = value['ips'].pop(0)
+            device = {
+                'name': mac_dev[value['mac']],
+                'addr': primary_ip['ip'],
+                'netmask': primary_ip['netmask'],
+                'gateway': primary_ip['gateway'],
+                'mac': value['mac'],
+                'ips': []
+            }
+
+            if len(value['dns']) != 0:
+                device['dns'] = ' '.join(value['dns'])
+
+            for ip in value['ips']:
+                device['ips'] += [{
+                    'addr': ip['ip'],
+                    'netmask': ip['netmask'],
+                }]
+
+            devices += [device]
+        return devices

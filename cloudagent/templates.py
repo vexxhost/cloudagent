@@ -49,3 +49,12 @@ REDHAT_SYSCONFIG = jinja2.Template("""NETWORKING=yes
 NETWORKING_IPV6=yes
 HOSTNAME={{ hostname }}
 """)
+
+REDHAT_IFCFG = jinja2.Template("""DEVICE={{ dev.name }}
+BOOTPROTO=static
+{% if dev.mac %}HWADDR={{ dev.mac }}{% endif %}
+IPADDR={{ dev.addr }}
+NETMASK={{ dev.netmask }}
+{% if dev.gateway %}GATEWAY={{ dev.gateway }}{% endif %}
+ONBOOT=yes
+""")

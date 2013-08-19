@@ -18,6 +18,7 @@
 A driver for Redhat-derived operating systems.
 """
 
+import glob
 import os
 import shutil
 import subprocess
@@ -48,7 +49,29 @@ class RedhatDriver(linux.LinuxDriver):
 
     def reset_nics(self, network_info):
         """Reset the NICs of this instance"""
-        pass
+        devices = self._get_devices(network_info)
+        files_to_create = {}
+
+        for device in devices:
+            # Generate primary interface config
+            config_path = "/etc/sysconfig/network-scripts/ifcfg-%s"
+            config = templates.REDHAT_IFCFG.render({'dev': device})
+            files_to_create[config_path % device['name']] = config
+
+            # Generate config for secondary interfaces
+            for index, alias_dev in enumerate(device['ips']):
+                alias_dev['name'] = "%s:%s" % (device['name'], index)
+                config = templates.REDHAT_IFCFG.render({'dev': alias_dev})
+                files_to_create[config_path % alias_dev['name']] = config
+
+        # Remove all existing configuration files
+        existing_files = glob.glob("/etc/sysconfig/network-scripts/ifcfg-eth*")
+        for f in existing_files:
+            os.remove(f)
+
+        # Write out all new configuration files
+        for path, contents in files_to_create.iteritems():
+            self.inject_file(path, contents)
 
     def reload_network(self):
         subprocess.call(('service', 'network', 'restart'))

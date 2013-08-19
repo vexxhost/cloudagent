@@ -79,8 +79,6 @@ class AgentService(daemon.Daemon):
             driver_command = getattr(self.driver, command)
             ret = driver_command(*args)
 
-            print 'ret:', ret
-
             if ret:
                 self.serial.write("%s\n" % ret)
             else:

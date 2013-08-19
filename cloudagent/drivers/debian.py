@@ -47,34 +47,7 @@ class DebianDriver(linux.LinuxDriver):
 
     def reset_nics(self, network_info):
         """Reset the NICs of this instance"""
-        nics = self.get_nics()
-        mac_dev = dict([[v,k] for k,v in nics.items()])
-
-        context = {'devices': []}
-        for key, value in network_info.iteritems():
-            if 'vif-' not in key: continue
-            if len(value['ips']) == 0: continue
-
-            primary_ip = value['ips'].pop(0)
-            device = {
-                'name': mac_dev[value['mac']],
-                'addr': primary_ip['ip'],
-                'netmask': primary_ip['netmask'],
-                'gateway': primary_ip['gateway'],
-                'ips': []
-            }
-
-            if len(value['dns']) != 0:
-                device['dns'] = ' '.join(value['dns'])
-
-            for ip in value['ips']:
-                device['ips'] += [{
-                    'addr': ip['ip'],
-                    'netmask': ip['netmask'],
-                }]
-
-            context['devices'] += [device]
-
+        context = {'devices': self._get_devices(network_info)}
         interfaces_file = templates.DEBIAN_INTERFACES.render(context)
 
         # Write the interfaces file
