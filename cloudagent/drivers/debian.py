@@ -82,4 +82,4 @@ class DebianDriver(linux.LinuxDriver):
 
     def reload_network(self):
         subprocess.call(('invoke-rc.d', 'hostname.sh', 'start'))
-        subprocess.call(('invoke-rc.d', 'networking', 'force-reload'))
+        subprocess.call(('invoke-rc.d', 'networking', 'restart'))
