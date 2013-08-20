@@ -54,7 +54,6 @@ class AgentService(daemon.Daemon):
 
     def run(self):
         self.serial = serial.Serial(2)
-        self.mdata_serial = serial.Serial(1)
 
         while True:
             b64_args = self.serial.readline().strip().split()
