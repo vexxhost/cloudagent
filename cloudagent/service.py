@@ -19,6 +19,7 @@ Agent configuration, service management and execution class
 """
 
 import base64
+import sys
 
 import serial
 import simplejson as json
@@ -42,8 +43,11 @@ class AgentService(daemon.Daemon):
 
         if distro == 'debian' or distro == 'Ubuntu':
             self.driver = debian.DebianDriver()
-        elif distro == 'CentOS':
+        elif distro == 'CentOS' or distro == 'Scientific Linux':
             self.driver = redhat.RedhatDriver()
+        else:
+            sys.exit("Unable to find driver for distro: %s" % distro)
+            
 
     def install(self):
         self.driver.install()
