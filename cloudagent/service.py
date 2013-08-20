@@ -41,9 +41,9 @@ class AgentService(daemon.Daemon):
 
         distro, version, codename = utils.linux_distribution()
 
-        if distro == 'debian' or distro == 'Ubuntu':
+        if distro in ('debian', 'Ubuntu'):
             self.driver = debian.DebianDriver()
-        elif distro == 'CentOS' or distro == 'Scientific Linux':
+        elif distro in ('CentOS', 'Scientific Linux', 'Fedora'):
             self.driver = redhat.RedhatDriver()
         else:
             sys.exit("Unable to find driver for distro: %s" % distro)
