@@ -16,8 +16,37 @@
 
 import setuptools
 import distutils.command.install
+import py2exe
 
 import cloudagent
+
+# ModuleFinder can't handle runtime changes to __path__, but win32com uses them
+try:
+    # py2exe 0.6.4 introduced a replacement modulefinder.
+    # This means we have to add package paths there, not to the built-in
+    # one.  If this new modulefinder gets integrated into Python, then
+    # we might be able to revert this some day.
+    # if this doesn't work, try import modulefinder
+    try:
+        import py2exe.mf as modulefinder
+    except ImportError:
+        import modulefinder
+    import win32com, sys
+    for p in win32com.__path__[1:]:
+        modulefinder.AddPackagePath("win32com", p)
+    for extra in ["win32com.adsi"]: #,"win32com.mapi"
+        __import__(extra)
+        m = sys.modules[extra]
+        for p in m.__path__[1:]:
+            modulefinder.AddPackagePath(extra, p)
+except ImportError:
+    # no build path setup, no worries.
+    pass
+
+win_service = dict(
+    description="OpenStack Cloud Server Agent",
+    modules=["AgentService"],
+)
 
 setuptools.setup(
     name='CloudAgent',
@@ -25,7 +54,9 @@ setuptools.setup(
     author='VEXXHOST, Inc.',
     author_email='support@vexxhost.com',
     packages=['cloudagent', 'cloudagent.drivers'],
-    scripts=['bin/cloudagent', 'bin/cloudagent-setup'],
+    scripts=['bin/cloudagent'],
+    console=['bin/cloudagent'],
+    service=[win_service],
     url='http://pypi.python.org/pypi/CloudAgent/',
     license='LICENSE',
     description='OpenStack Cloud Server Agent',
@@ -33,7 +64,10 @@ setuptools.setup(
     install_requires=[
         "Jinja2==2.6",
         "pyserial",
-        "simplejson==2.1.0",
+        "wmi",
+        "pycrypto",
+        "pywin32",
+        "win32com",
     ],
     dependency_links = ['http://pypi.python.org/packages/source/J/Jinja2/Jinja2-2.6.tar.gz#egg=Jinja2-2.6',
                         'https://pypi.python.org/packages/source/s/simplejson/simplejson-2.1.0.tar.gz#egg=simplejson-2.1.0'],
