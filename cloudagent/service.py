@@ -19,10 +19,10 @@ Agent configuration, service management and execution class
 """
 
 import base64
+import json
 import sys
 
 import serial
-import simplejson as json
 
 from cloudagent import __version__
 from cloudagent import daemon
