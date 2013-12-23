@@ -18,6 +18,10 @@
 Base driver to be implemented by each operating system / platform driver.
 """
 
+import os
+import time
+import shutil
+
 from cloudagent import __version__
 from cloudagent import simpledh
 
@@ -40,7 +44,9 @@ class BaseDriver(object):
 
     def backup_file(self, path):
         """Create a backup copy of a file"""
-        raise NotImplementedError()
+        timestamp = int(time.time())
+        new_name = "%s.%s" % (path, timestamp)
+        shutil.copyfile(path, new_name)
 
     def set_admin_password(self, new_pass):
         """Update the password of the root/administrator account"""
@@ -48,7 +54,16 @@ class BaseDriver(object):
 
     def inject_file(self, path, contents):
         """Creates/update the content of file with specified contents"""
-        raise NotImplementedError()
+        if os.path.exists(path):
+            self.backup_file(path)
+
+        dir_path = os.path.dirname(path)
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+
+        fd = open(path, 'w')
+        fd.write(contents)
+        fd.close()
 
     def get_nics(self):
         """Get all NICs and their MAC addreses on this instance"""

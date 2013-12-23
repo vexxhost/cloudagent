@@ -32,12 +32,6 @@ from cloudagent import utils
 class LinuxDriver(base.BaseDriver):
     """Base Linux driver"""
 
-    def backup_file(self, path):
-        """Create a backup copy of a file"""
-        timestamp = int(time.time())
-        new_name = "%s.%s" % (path, timestamp)
-        shutil.copyfile(path, new_name)
-
     def set_admin_password(self, new_pass):
         """Update the password of the root/administrator account"""
         salt = os.urandom(16).encode('hex')
@@ -46,15 +40,6 @@ class LinuxDriver(base.BaseDriver):
 
         if ret != 0:
             raise RuntimeError('Failed to change password')
-
-    def inject_file(self, path, contents):
-        """Creates/update the content of file with specified contents"""
-        if os.path.exists(path):
-            self.backup_file(path)
-
-        fd = open(path, 'w')
-        fd.write(contents)
-        fd.close()
 
     def get_nics(self):
         """Get all NICs and their MAC addreses on this instance"""
