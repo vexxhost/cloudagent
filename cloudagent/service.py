@@ -20,15 +20,13 @@ Agent configuration, service management and execution class
 
 import base64
 import json
+import platform
 import sys
 
 import serial
 
 from cloudagent import __version__
 from cloudagent import daemon
-from cloudagent.drivers import debian
-from cloudagent.drivers import redhat
-from cloudagent import utils
 
 
 class AgentService(daemon.Daemon):
@@ -39,16 +37,24 @@ class AgentService(daemon.Daemon):
         super(AgentService, self).__init__(pidfile='/var/run/cloudagent.pid',
             verbose=0)
 
-        distro, version, codename = utils.linux_distribution()
         self.running = True
 
-        if distro in ('debian', 'Ubuntu'):
-            self.driver = debian.DebianDriver()
-        elif distro in ('CentOS', 'Scientific Linux', 'Fedora'):
-            self.driver = redhat.RedhatDriver()
+        if platform.system() == 'Windows':
+            from cloudagent.drivers import windows
+            self.driver = windows.WindowsDriver()
         else:
-            sys.exit("Unable to find driver for distro: %s" % distro)
-            
+            from cloudagent import utils
+            distro, version, codename = utils.linux_distribution()
+
+            if distro in ('debian', 'Ubuntu'):
+                from cloudagent.drivers import debian
+                self.driver = debian.DebianDriver()
+            elif distro in ('CentOS', 'Scientific Linux', 'Fedora'):
+                from cloudagent.drivers import redhat
+                self.driver = redhat.RedhatDriver()
+            else:
+                sys.exit("Unable to find driver for distro: %s" % distro)
+
 
     def install(self):
         self.driver.install()
