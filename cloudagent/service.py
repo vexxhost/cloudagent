@@ -73,7 +73,7 @@ class AgentService(daemon.Daemon):
             try:
                 args = [base64.b64decode(a) for a in b64_args]
             except TypeError, e:
-                self.serial.write('invalid-data\n')
+                self.serial.write('error:invalid-data\n')
                 continue
 
             command = args.pop(0)
@@ -100,8 +100,8 @@ class AgentService(daemon.Daemon):
             else:
                 self.serial.write("ok\n")
         except AttributeError, e:
-            self.serial.write('invalid-cmd\n')
+            self.serial.write('error:invalid-cmd\n')
         except TypeError, e:
-            self.serial.write('missing-args\n')
+            self.serial.write('error:missing-args\n')
         except Exception, e:
-            self.serial.write('%s\n' % e)
+            self.serial.write('error:system\n')
