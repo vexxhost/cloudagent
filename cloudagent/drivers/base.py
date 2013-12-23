@@ -19,7 +19,7 @@ Base driver to be implemented by each operating system / platform driver.
 """
 
 from cloudagent import __version__
-from cloudagent import utils
+from cloudagent import simpledh
 
 class BaseDriver(object):
     """Base class for compute drivers."""
@@ -34,7 +34,7 @@ class BaseDriver(object):
 
     def key_init(self, compute_pub):
         """Initialize SimpleDH for encrypted communication"""
-        self.dh = utils.SimpleDH()
+        self.dh = simpledh.SimpleDH()
         self.dh.compute_shared(int(compute_pub))
         return 'ok:%s' % self.dh.get_public()
 
