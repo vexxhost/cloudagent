@@ -40,6 +40,7 @@ class AgentService(daemon.Daemon):
             verbose=0)
 
         distro, version, codename = utils.linux_distribution()
+        self.running = True
 
         if distro in ('debian', 'Ubuntu'):
             self.driver = debian.DebianDriver()
@@ -53,21 +54,27 @@ class AgentService(daemon.Daemon):
         self.driver.install()
 
     def run(self):
-        self.serial = serial.Serial(2)
+        # NOTE(mnaser): COM3 is not available under Windows without major
+        #               modifications and Windows does not need a console
+        #               redirect so we use COM1 instead.
+        port = 0 if platform.system() == 'Windows' else 2
+        self.serial = serial.Serial(port, timeout=1)
 
-        while True:
+        while self.running:
             b64_args = self.serial.readline().strip().split()
-            args = []
+            if not b64_args: continue
 
             try:
-                for arg in b64_args:
-                    args += [base64.b64decode(arg)]
+                args = [base64.b64decode(a) for a in b64_args]
             except TypeError, e:
                 self.serial.write('invalid-data\n')
                 continue
 
             command = args.pop(0)
             self.run_command(command, args)
+
+    def stop(self):
+        self.running = False
 
     def run_command(self, command, args):
         try:
