@@ -50,6 +50,16 @@ win_service = dict(
     modules=["AgentService"],
 )
 
+requirements = [
+    "Jinja2==2.6",
+    "pyserial",
+    "wmi",
+    "pycrypto"
+]
+
+if platform.system() = 'Windows':
+    requirements += ["pywin32", "win32com"]
+        
 setuptools.setup(
     name='CloudAgent',
     version=cloudagent.__version__,
