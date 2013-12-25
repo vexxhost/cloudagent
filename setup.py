@@ -57,7 +57,7 @@ requirements = [
     "pycrypto"
 ]
 
-if platform.system() = 'Windows':
+if platform.system() == 'Windows':
     requirements += ["pywin32", "win32com"]
         
 setuptools.setup(
