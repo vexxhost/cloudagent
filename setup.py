@@ -14,34 +14,36 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import setuptools
 import distutils.command.install
-import py2exe
+import platform
+import setuptools
 
 import cloudagent
 
-# ModuleFinder can't handle runtime changes to __path__, but win32com uses them
-try:
-    # py2exe 0.6.4 introduced a replacement modulefinder.
-    # This means we have to add package paths there, not to the built-in
-    # one.  If this new modulefinder gets integrated into Python, then
-    # we might be able to revert this some day.
-    # if this doesn't work, try import modulefinder
+if platform.system() == 'Windows':
+    import py2exe
+    # ModuleFinder can't handle runtime changes to __path__, but win32com uses them
     try:
-        import py2exe.mf as modulefinder
+        # py2exe 0.6.4 introduced a replacement modulefinder.
+        # This means we have to add package paths there, not to the built-in
+        # one.  If this new modulefinder gets integrated into Python, then
+        # we might be able to revert this some day.
+        # if this doesn't work, try import modulefinder
+        try:
+            import py2exe.mf as modulefinder
+        except ImportError:
+            import modulefinder
+        import win32com, sys
+        for p in win32com.__path__[1:]:
+            modulefinder.AddPackagePath("win32com", p)
+        for extra in ["win32com.adsi"]: #,"win32com.mapi"
+            __import__(extra)
+            m = sys.modules[extra]
+            for p in m.__path__[1:]:
+                modulefinder.AddPackagePath(extra, p)
     except ImportError:
-        import modulefinder
-    import win32com, sys
-    for p in win32com.__path__[1:]:
-        modulefinder.AddPackagePath("win32com", p)
-    for extra in ["win32com.adsi"]: #,"win32com.mapi"
-        __import__(extra)
-        m = sys.modules[extra]
-        for p in m.__path__[1:]:
-            modulefinder.AddPackagePath(extra, p)
-except ImportError:
-    # no build path setup, no worries.
-    pass
+        # no build path setup, no worries.
+        pass
 
 win_service = dict(
     description="OpenStack Cloud Server Agent",
