@@ -73,14 +73,7 @@ setuptools.setup(
     license='LICENSE',
     description='OpenStack Cloud Server Agent',
     data_files=[('init-scripts', ['init-scripts/debian', 'init-scripts/redhat'])],
-    install_requires=[
-        "Jinja2==2.6",
-        "pyserial",
-        "wmi",
-        "pycrypto",
-        "pywin32",
-        "win32com",
-    ],
+    install_requires = requirements,
     dependency_links = ['http://pypi.python.org/packages/source/J/Jinja2/Jinja2-2.6.tar.gz#egg=Jinja2-2.6',
                         'https://pypi.python.org/packages/source/s/simplejson/simplejson-2.1.0.tar.gz#egg=simplejson-2.1.0'],
 )
