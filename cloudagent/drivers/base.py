@@ -87,7 +87,9 @@ class BaseDriver(object):
 
     def reset_network(self, network_info):
         """Update and re-apply new network configuration"""
-        self.reset_hostname(network_info)
+        if 'hostname' in network_info:
+            self.reset_hostname(network_info)
+
         self.reset_resolvers(network_info)
         self.reset_nics(network_info)
         self.reload_network()
