@@ -49,7 +49,7 @@ class AgentService(daemon.Daemon):
             if distro in ('debian', 'Ubuntu'):
                 from cloudagent.drivers import debian
                 self.driver = debian.DebianDriver()
-            elif distro in ('CentOS', 'Scientific Linux', 'Fedora'):
+            elif distro in ('CentOS', 'CentOS Linux', 'Scientific Linux', 'Fedora'):
                 from cloudagent.drivers import redhat
                 self.driver = redhat.RedhatDriver()
             else:
