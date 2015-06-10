@@ -21,8 +21,11 @@ throughout the Linux platform
 
 import crypt
 import os
+import os.path
+import pickle
 import shutil
 import subprocess
+import syslog
 import time
 
 from cloudagent.drivers import base
@@ -34,12 +37,28 @@ class LinuxDriver(base.BaseDriver):
 
     def set_admin_password(self, new_pass):
         """Update the password of the root/administrator account"""
-        salt = os.urandom(16).encode('hex')
-        password = crypt.crypt(new_pass,'$1$' + salt + '$')
-        ret = subprocess.call(('usermod', '-p', password, 'root'))
+        # List of users to update
+        users = ['root']
 
-        if ret != 0:
-            raise RuntimeError('Failed to change password')
+        # Retrieve the current user defined in cloud-init
+        if os.path.isfile('/var/lib/cloud/instance/obj.pkl'):
+            fd = open('/var/lib/cloud/instance/obj.pkl')
+            ds = pickle.load(fd)
+            default_user = ds.distro.get_default_user()
+            users.append(default_user['name'])
+
+        # Change password for all users
+        for user in users:
+            salt = os.urandom(16).encode('hex')
+            password = crypt.crypt(new_pass,'$1$' + salt + '$')
+            ret = subprocess.call(('usermod', '-p', password, user))
+
+            if ret != 0:
+                syslog.syslog(syslog.LOG_WARNING,
+                              'Failed to change password for %s' % user)
+
+        # Done!
+        syslog.syslog(syslog.LOG_INFO, 'Root password change completed')
 
     def get_nics(self):
         """Get all NICs and their MAC addreses on this instance"""
