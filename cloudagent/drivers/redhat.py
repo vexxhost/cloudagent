@@ -33,7 +33,7 @@ class RedhatDriver(linux.LinuxDriver):
 
     def install(self):
         """Install scripts to ensure running on boot"""
-        path = "%s/init-scripts/redhat" % sys.prefix
+        path = "/usr/share/cloudagent/init-scripts/redhat"
         install_path = '/etc/init.d/cloudagent'
         shutil.copyfile(path, install_path)
         os.chmod(install_path, 0755)

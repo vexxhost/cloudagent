@@ -32,7 +32,7 @@ class DebianDriver(linux.LinuxDriver):
 
     def install(self):
         """Install scripts to ensure running on boot"""
-        path = "%s/init-scripts/debian" % sys.prefix
+        path = "/usr/share/cloudagent/init-scripts/debian"
         install_path = '/etc/init.d/cloudagent'
         shutil.copyfile(path, install_path)
         os.chmod(install_path, 0755)
