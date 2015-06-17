@@ -19,6 +19,7 @@ A driver for Debian-derived operating systems.
 """
 
 import os
+import os.path
 import shutil
 import sys
 import subprocess
@@ -32,6 +33,13 @@ class DebianDriver(linux.LinuxDriver):
 
     def install(self):
         """Install scripts to ensure running on boot"""
+        if os.path.isfile('/sbin/initctl'):
+            path = "/usr/share/cloudagent/init-scripts/upstart"
+            install_path = '/etc/init/cloudagent.conf'
+            shutil.copyfile(path, install_path)
+            return
+
+        # Debian most likely (no upstart)
         path = "/usr/share/cloudagent/init-scripts/debian"
         install_path = '/etc/init.d/cloudagent'
         shutil.copyfile(path, install_path)
