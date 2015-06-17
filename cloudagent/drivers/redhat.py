@@ -21,6 +21,7 @@ A driver for Redhat-derived operating systems.
 import glob
 import os
 import shutil
+import sys
 import subprocess
 
 from cloudagent.drivers import linux
@@ -32,9 +33,9 @@ class RedhatDriver(linux.LinuxDriver):
 
     def install(self):
         """Install scripts to ensure running on boot"""
-        path = os.path.dirname(os.path.realpath(__file__))
+        path = "%s/init-scripts/redhat" % sys.prefix
         install_path = '/etc/init.d/cloudagent'
-        shutil.copyfile('%s/../../init-scripts/redhat' % path, install_path)
+        shutil.copyfile(path, install_path)
         os.chmod(install_path, 0755)
         subprocess.call(('chkconfig', 'cloudagent', 'on'))
 
