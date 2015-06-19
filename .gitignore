@@ -3,6 +3,9 @@
 # C extensions
 *.so
 
+# Packaging
+init-scripts/cloudagent.conf
+
 # Packages
 *.egg
 *.egg-info
