@@ -1,0 +1,12 @@
+Source: cloudagent
+Maintainer: VEXXHOST <support@vexxhost.com>
+Section: python
+Priority: optional
+Build-Depends: python-setuptools (>= 0.6b3), python-all (>= 2.6.6-3), debhelper (>= 7.4.3), dh-python, dh-systemd, python-jinja2, python-crypto
+Standards-Version: 3.9.1
+
+Package: cloudagent
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}
+Description: OpenStack Cloud Server Agent
+ This package contains the optional Python agent required to use the password and network reset features offered on the VEXXHOST Public Cloud.

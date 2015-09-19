@@ -1,0 +1,9 @@
+[Unit]
+Description=CloudAgent
+After=cloud-final.service
+
+[Service]
+ExecStart=/usr/bin/cloudagent -f
+
+[Install]
+WantedBy=multi-user.target
