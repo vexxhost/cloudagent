@@ -22,11 +22,11 @@ throughout the Linux platform
 import crypt
 import os
 import os.path
-import pickle
 import shutil
 import subprocess
 import syslog
 import time
+import yaml
 
 from cloudagent.drivers import base
 from cloudagent import templates
@@ -41,10 +41,10 @@ class LinuxDriver(base.BaseDriver):
         users = ['root']
 
         # Retrieve the current user defined in cloud-init
-        if os.path.isfile('/var/lib/cloud/instance/obj.pkl'):
-            fd = open('/var/lib/cloud/instance/obj.pkl')
-            ds = pickle.load(fd)
-            default_user = ds.distro.get_default_user()
+        if os.path.isfile('/etc/cloud/cloud.cfg'):
+            fd = open('/etc/cloud/cloud.cfg')
+            data = yaml.load(fd)
+            default_user = data['system_info']['default_user']
             users.append(default_user['name'])
 
         # Change password for all users

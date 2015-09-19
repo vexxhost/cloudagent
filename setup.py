@@ -53,7 +53,8 @@ win_service = dict(
 requirements = [
     "Jinja2==2.6",
     "pyserial",
-    "pycrypto"
+    "pycrypto",
+    "yaml"
 ]
 
 if platform.system() == 'Windows':

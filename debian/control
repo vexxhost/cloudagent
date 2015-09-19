@@ -2,7 +2,7 @@ Source: cloudagent
 Maintainer: VEXXHOST <support@vexxhost.com>
 Section: python
 Priority: optional
-Build-Depends: python-setuptools (>= 0.6b3), python-all (>= 2.6.6-3), debhelper (>= 7.4.3), dh-python, dh-systemd, python-jinja2, python-crypto
+Build-Depends: python-setuptools (>= 0.6b3), python-all (>= 2.6.6-3), debhelper (>= 7.4.3), dh-python, dh-systemd, python-jinja2, python-crypto, python-yaml
 Standards-Version: 3.9.1
 
 Package: cloudagent
